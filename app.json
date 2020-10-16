@@ -1,0 +1,12 @@
+{
+  "name": "cita",
+  "displayName": "cita",
+  "expo": {
+    "name": "cita",
+    "slug": "cita",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
