@@ -1,62 +1,105 @@
-import React, { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import React, { Fragment, useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { Citas } from "./components/Citas";
+import { Formulario } from "./components/Formulario";
 
 export const App = () => {
-  const [citas, setCitas] = useState([
-    { id: "1", paciente: "Johnny", propietario: "Juan", sintomas: "No come" },
-    {
-      id: "2",
-      paciente: "Johnny2",
-      propietario: "Juan2",
-      sintomas: "No come2",
-    },
-    {
-      id: "3",
-      paciente: "Johnny3",
-      propietario: "Juan3",
-      sintomas: "No come3",
-    },
-  ]);
+  const [show, setShow] = useState(false);
+
+  const [citas, setCitas] = useState([]);
 
   const handlerEliminar = (id) => {
     setCitas((citasActivas) => citasActivas.filter((cita) => cita.id !== id));
   };
 
+  const showForm = () => {
+    setShow(!show);
+  };
+
   return (
-    <View style={style.contenedot}>
-      <Text style={style.titulo}>Administrador de citas</Text>
-      <Text style={style.titulo}>
-        {" "}
-        {citas.length > 0
-          ? "Administra tus citas"
-          : "No hay citas, agrega una"}{" "}
-      </Text>
-      <FlatList
-        data={citas}
-        renderItem={({ item: { paciente, propietario, sintomas, id } }) => (
-          <Citas
-            paciente={paciente}
-            propietario={propietario}
-            sintomas={sintomas}
-            id={id}
-            handlerEliminarFuncion={handlerEliminar}
-          />
-        )}
-        keyExtractor={({ id }) => id}
-      />
-    </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={style.contenedor}>
+        <Text style={style.titulo}>Administrador de citas</Text>
+
+        <View>
+          <TouchableHighlight onPress={() => showForm()} style={style.btnShow}>
+            <Text style={style.textoShow}>
+              {show ? "Cancelar cita" : "Crear nueva cita"}
+            </Text>
+          </TouchableHighlight>
+        </View>
+
+        <View style={style.contenido}>
+          {show ? (
+            <Fragment>
+              <Text style={style.titulo}>Crear nueva cita</Text>
+              <Formulario citas={citas} setCitas={setCitas} setShow={setShow} />
+            </Fragment>
+          ) : (
+            <Fragment>
+              <Text style={style.titulo}>
+                {" "}
+                {citas.length > 0
+                  ? "Administra tus citas"
+                  : "No hay citas, agrega una"}{" "}
+              </Text>
+              <FlatList
+                style={style.listado}
+                data={citas}
+                renderItem={({ item: { paciente, dueno, sintomas, id } }) => (
+                  <Citas
+                    paciente={paciente}
+                    dueno={dueno}
+                    sintomas={sintomas}
+                    id={id}
+                    handlerEliminarFuncion={handlerEliminar}
+                  />
+                )}
+                keyExtractor={({ id }) => id}
+              />
+            </Fragment>
+          )}
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const style = StyleSheet.create({
-  contenedot: { backgroundColor: "#AA076B", flex: 1 },
+  contenedor: { backgroundColor: "#AA076B", flex: 1 },
   titulo: {
-    marginTop: 40,
+    marginTop: Platform.OS === "ios" ? 40 : 20,
     color: "#fff",
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
+  },
+  contenido: {
+    flex: 1,
+    marginHorizontal: "2.5%",
+  },
+  listado: {
+    flex: 1,
+  },
+  btnShow: {
+    padding: 10,
+    backgroundColor: "red",
+    marginVertical: 10,
+    backgroundColor: "#7d024e",
+  },
+  textoShow: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });

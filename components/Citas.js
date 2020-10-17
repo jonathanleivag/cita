@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { Button, FlatList, StyleSheet, Text, View } from "react-native";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import React from "react";
+import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
 
 export const Citas = ({
   paciente,
-  propietario,
+  dueno,
   sintomas,
   handlerEliminarFuncion,
   id,
@@ -17,7 +16,7 @@ export const Citas = ({
       </View>
       <View>
         <Text style={style.label}>propietario: </Text>
-        <Text style={style.texto}>{propietario}</Text>
+        <Text style={style.texto}>{dueno}</Text>
       </View>
       <View>
         <Text style={style.label}>sintomas: </Text>
