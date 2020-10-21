@@ -1,4 +1,5 @@
-import React, { Fragment, useState } from "react";
+import AsyncStorage from "@react-native-community/async-storage";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -17,12 +18,36 @@ export const App = () => {
 
   const [citas, setCitas] = useState([]);
 
+  useEffect(() => {
+    const obtenerCitas = async () => {
+      try {
+        const citasStorage = await AsyncStorage.getItem("citas");
+        if (citasStorage) {
+          setCitas(JSON.parse(citasStorage));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    obtenerCitas();
+  }, []);
+
   const handlerEliminar = (id) => {
-    setCitas((citasActivas) => citasActivas.filter((cita) => cita.id !== id));
+    const citasFiltradas = citas.filter((cita) => cita.id !== id);
+    setCitas(citasFiltradas);
+    guardarAsyncStorage(citasFiltradas);
   };
 
   const showForm = () => {
     setShow(!show);
+  };
+
+  const guardarAsyncStorage = async (citaJSON) => {
+    try {
+      await AsyncStorage.setItem("citas", JSON.stringify(citaJSON));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -42,7 +67,12 @@ export const App = () => {
           {show ? (
             <Fragment>
               <Text style={style.titulo}>Crear nueva cita</Text>
-              <Formulario citas={citas} setCitas={setCitas} setShow={setShow} />
+              <Formulario
+                citas={citas}
+                setCitas={setCitas}
+                setShow={setShow}
+                guardarAsyncStorage={guardarAsyncStorage}
+              />
             </Fragment>
           ) : (
             <Fragment>

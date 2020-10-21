@@ -12,7 +12,12 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import shortid from "shortid";
 
-export const Formulario = ({ citas, setCitas, setShow }) => {
+export const Formulario = ({
+  citas,
+  setCitas,
+  setShow,
+  guardarAsyncStorage,
+}) => {
   const [paciente, setPaciente] = useState("");
   const [dueno, setDueno] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -78,6 +83,7 @@ export const Formulario = ({ citas, setCitas, setShow }) => {
     cita.id = shortid.generate();
     const citasNueva = [...citas, cita];
     setCitas(citasNueva);
+    guardarAsyncStorage(citasNueva);
     setShow(false);
   };
 
